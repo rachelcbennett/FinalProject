@@ -104,7 +104,140 @@ userSchema.methods.comparePassword = async function(password) {
     return obj;
   }
 
+
+// middleware function to check for logged-in users
+const validUser = async (req, res, next) => {
+    if (!req.session.userID)
+      return res.status(403).send({
+        message: "not logged in"
+      });
+    try {
+      const user = await User.findOne({
+        _id: req.session.userID
+      });
+      if (!user) {
+        return res.status(403).send({
+          message: "not logged in"
+        });
+      }
+      // set the user field in the request
+      req.user = user;
+    } catch (error) {
+      // Return an error if user does not exist.
+      return res.status(403).send({
+        message: "not logged in"
+      });
+    }
+  
+    // if everything succeeds, move to the next middleware
+    next();
+};
 /* ------------ END PASSWORD STUFF ---------*/
+
+// Create a new User!!
+app.post('/api/users', async (req, res) => {
+
+    //Make sure all the fields are filled
+    if (!req.body.name || !req.body.userName || !req.body.password)
+    return res.status(400).send({
+      message: "First Name, Last Name, Username and Password fields are required."
+    });
+
+
+    try {
+
+        //  Check to see if username already exists and if not send a 403 error. A 403
+        // error means permission denied.
+        const existingUser = await User.findOne({
+          userName: req.body.userName
+        });
+        if (existingUser)
+          return res.status(403).send({
+            message: "username already exists"
+          });
+        const user = new User({
+            name: req.body.name,
+            userName: req.body.userName,
+            password: req.body.password,
+            location:req.body.location,
+            avgSalary: req.body.avgSalary,
+            numEmployees: req.body.numEmployees,
+        });
+    
+        await user.save();
+        //set user session info
+        req.session.userID = user._id;
+        return res.send({
+            user: user
+        });
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+ 
+//LOGIN for a user!!
+app.post('/api/login', async (req,res)=> {
+
+    //Make sure they actually put in a password
+    if (!req.body.userName || !req.body.password)
+        return res.sendStatus(400);
+
+    try {
+        //lookup user record
+        const user = await User.findOne({
+            userName: req.body.userName
+        });
+        //Return an error if they ain't a real user
+        if (!user)
+            return res.status(403).send({
+                message:"username or password is wrong"
+            });
+        
+        //Return the SAME error if the password is wrong!! Don't leak info!!
+        if (!await user.comparePassword(req.body.password))
+            return res.status(403).send({
+                message: "username or password is wrong"
+            });
+        
+        req.session.userID = user._id;
+
+        return res.send({
+            user: user
+        });
+    }catch(error){
+        console.log(error);
+        return res.sendStatus(500);
+    }
+});
+
+// get logged in user!
+router.get('/api/user', validUser, async (req, res) => {
+    try {
+      res.send({
+        user: req.user
+      });
+    } catch (error) {
+      console.log(error);
+      return res.sendStatus(500);
+    }
+  });
+
+// logout
+app.delete("/api/users", validUser, async (req, res) => {
+    try {
+      req.session = null;
+      res.sendStatus(200);
+    } catch (error) {
+      console.log(error);
+      return res.sendStatus(500);
+    }
+});
+  
+
+
+
+
 
 
 
@@ -218,24 +351,9 @@ app.post('/api/photos', upload.single('photo'), async (req, res) => {
 
 
 
-// Create a new User
-app.post('/api/users', async (req, res) => {
-    const user = new User({
-      name: req.body.name,
-      location:req.body.location,
-      avgSalary: req.body.avgSalary,
-      numEmployees: req.body.numEmployees,
-    });
-    try {
-      await user.save();
-      res.send(user);
-    } catch (error) {
-      console.log(error);
-      res.sendStatus(500);
-    }
-});
 
-// Get a list of all projects
+
+// Get a list of all users
 app.get('/api/users', async (req, res) => {
     try {
       let users = await User.find();

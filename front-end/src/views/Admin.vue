@@ -7,7 +7,7 @@
     
 
     </ul>
-    <div class='add'>
+    <div v-if="userLoggedIn" class='add'>
         <h1> Add an Employer </h1>
         <form @submit.prevent="addUser">
             <input type="text" v-model="userName" placeholder="Company Name">
@@ -68,6 +68,8 @@
             <br>
         </div>
     </div>
+
+    <Login v-else />
   </div>
 </template>
 
@@ -75,10 +77,12 @@
 <script>
 // @ is an alias to /src
 import axios from 'axios';
+import Login from '@/components/Login.vue';
 
 export default {
   name: 'Admin',
   components: {
+      Login
     
   },
   data(){
@@ -97,9 +101,19 @@ export default {
           numEmployees:null,
       }
   },
-  created() {
-    this.getUsers();
+  async created() {
+    try {
+      let response = await axios.get('/api/user'); //SEE IF LOGGED IN
+      this.$root.$data.user = response.data.user;
+    } catch (error) {
+      this.$root.$data.user = null;
+    }
   },
+  computed : {
+      userLoggedIn() {
+          return this.$root.$data.user;
+      }
+  }, 
   methods: {
       editJob(job){
           this.jobID = job._id;

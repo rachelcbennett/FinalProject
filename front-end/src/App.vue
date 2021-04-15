@@ -1,5 +1,7 @@
 <template>
   <div id="app">
+      <div class='head'> </div>
+    
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/jobs">View Jobs</router-link> |
@@ -39,7 +41,7 @@
 footer{
     position:fixed;
     bottom:0;
-    opacity:75%;
+    opacity:0.85;
     text-align:center;
     width:100%;
     height:20px;
@@ -48,5 +50,10 @@ footer{
 
 a{
     text-decoration: none;
+}
+
+.head{
+    background-color:#00c2cb;
+    height: 3px;
 }
 </style>

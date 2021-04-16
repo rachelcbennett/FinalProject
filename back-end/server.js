@@ -27,6 +27,20 @@ const upload = multer({
 });
 
 
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
+const cookieSession = require('cookie-session');
+app.use(cookieSession({
+  name: 'session',
+  keys: [
+    'secretValue'
+  ],
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
 
 const jobSchema = new mongoose.Schema({
     user: {
@@ -53,13 +67,6 @@ const userSchema = new mongoose.Schema({
     avgSalary: Number,
 });
   
-  
-// Create a model for users
-const User = mongoose.model('User', userSchema);
-
-
-/* ------------BEGIN AUTHENTICATION/PASSWORD STUFF-----------*/
-
 
 // This is a hook that will be called before a user record is saved,
 // allowing us to be sure to salt and hash the password first.
@@ -132,6 +139,15 @@ const validUser = async (req, res, next) => {
     // if everything succeeds, move to the next middleware
     next();
 };
+  
+// Create a model for users
+const User = mongoose.model('User', userSchema);
+
+
+/* ------------BEGIN AUTHENTICATION/PASSWORD STUFF-----------*/
+
+
+
 /* ------------ END PASSWORD STUFF ---------*/
 
 // Create a new User!!
@@ -193,7 +209,8 @@ app.post('/api/login', async (req,res)=> {
             return res.status(403).send({
                 message:"username or password is wrong"
             });
-        
+        console.log("Righthwhere")
+        console.log(user);
         //Return the SAME error if the password is wrong!! Don't leak info!!
         if (!await user.comparePassword(req.body.password))
             return res.status(403).send({
@@ -212,16 +229,18 @@ app.post('/api/login', async (req,res)=> {
 });
 
 // get logged in user!
-router.get('/api/user', validUser, async (req, res) => {
+app.get('/api/user', validUser, async (req, res) => {
     try {
+      console.log("entered /api/user");
       res.send({
         user: req.user
       });
     } catch (error) {
       console.log(error);
+      console.log('/api/user error!');
       return res.sendStatus(500);
     }
-  });
+});
 
 // logout
 app.delete("/api/users", validUser, async (req, res) => {

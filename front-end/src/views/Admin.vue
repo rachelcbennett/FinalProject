@@ -1,52 +1,23 @@
 <template>
   <div class="admin">
     
-  
-    <ul>
-
-    
-
-    </ul>
     <div v-if="userLoggedIn" class='add'>
-        <h1> Add an Employer </h1>
-        <form @submit.prevent="addUser">
-            <input type="text" v-model="userName" placeholder="Company Name">
-            <br>
-            <br>
-            <input type="text" v-model="location" placeholder = "Company Location">
-            <br>
-            <br>
-            <input type="text" v-model="numEmployees" placeholder = "Number of Employees">
-            <br>
-            <br>
-            <input type="text" v-model="avgSalary" placeholder = "Average Salary">
-            <br>
-            <button type="submit">Submit</button>
-        </form>
         <br>
-        <br>
-
-
-        <hr>
-        <br>
-          <h2> List a Job </h2>
-          <div id = 'users'>
-            To list/edit a job, please select an employer: <br>
+          <h2> List and Edit Jobs </h2>
+          <h3> Your current jobs:</h3>
+          <li v-for="job in jobs" :key="job.id">
+            {{job.title}} <button @click="deleteJob(job)"> Delete </button>
+            <button @click="editJob(job)"> Edit Job </button>
+            </li>
            
-            <button v-for='user in users' :key=user.id @click=selectUser(user)>{{user.name}} <br><em> Location: {{user.location}} <br> Number Employees: {{user.numEmployees}} </em></button>
              <br>
               <br>
 
-        <li v-for="job in jobs" :key="job.id">
-            {{job.title}} <button @click="deleteJob(job)"> Delete </button>
-            <button @click="editJob(job)"> Edit Job </button>
-        </li>
         <div v-if="editJobBool">
             You are now using edit mode. Please enter the information you'd like to edit in the fields below then hit "Upload or Edit Job". 
         </div>
         <br>
-        <br>
-        </div>
+        
         <div class='form'>
             
             <input v-model="title" placeholder="Job Title">
@@ -103,8 +74,11 @@ export default {
   },
   async created() {
     try {
+
       let response = await axios.get('/api/user'); //SEE IF LOGGED IN
       this.$root.$data.user = response.data.user;
+      this.user = response.data.user;
+      this.getJobs();
     } catch (error) {
       this.$root.$data.user = null;
     }
@@ -150,9 +124,6 @@ export default {
                     path: r1.data.path,
                 });
                 this.getJobs();
-
-
-
             }catch(error){
                 console.log(error)
             }
@@ -210,7 +181,7 @@ export default {
             const formData = new FormData();
             formData.append('photo', this.file,this.file.name)
             let r1 = await axios.post('/api/photos', formData);
-            let r2 = await axios.post('/api/items', {
+            let r2 = await axios.post('/api/jobs', {
                 title: this.title,
                 description: this.description,
                 startdate: this.startdate,

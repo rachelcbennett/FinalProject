@@ -215,7 +215,7 @@ export default {
                 const formData = new FormData();
                 formData.append('photo', this.file,this.file.name)
                 let r1 = await axios.post('/api/photos', formData);
-                await axios.put(`/api/users/${this.user._id}/jobs/${this.jobID}`,{
+                await axios.put(`/api/users/${this.user._id}/jobs/${this.jobID}`{
                     title:this.title,
                     description: this.description,
                     startdate: this.startdate,

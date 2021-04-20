@@ -26,7 +26,6 @@
             
             <input v-model="title" placeholder="Job Title">
             <br>
-            
             <br>
             <input type = "text" v-model="startdate" placeholder="Start Date">
             <br>
@@ -98,6 +97,7 @@ export default {
           this.editJobBool= true;
       },
       async addJob(){
+          this.user = userLoggedIn();
           if (this.editJobBool ===false){
             try {
                 

@@ -14,17 +14,18 @@ app.use(bodyParser.urlencoded({
 const mongoose = require('mongoose');
 
 // connect to the database
-mongoose.connect('mongodb://localhost:27017/newestDB', {
+mongoose.connect('mongodb://localhost:27017/finalDB', {
   useNewUrlParser: true
 });
 
 const multer = require('multer')
 const upload = multer({
-    dest: '../front-end/public/images/',
-    limits: {
-        fileSize: 100000000
-    }
+  dest: '/var/www/finalproj.rachelcardon.com/images/',
+  limits: {
+    fileSize: 10000000
+  }
 });
+
 
 
 const cookieParser = require("cookie-parser");

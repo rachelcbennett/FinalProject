@@ -89,15 +89,18 @@ export default {
   },
   computed : {
       userLoggedIn() {
+          
           return this.$root.$data.user;
-      }
+      },
+      
   }, 
   methods: {
-      editJob(job){
+      editJob(job)
           this.jobID = job._id;
           this.editJobBool= true;
       },
       async addJob(){
+          this.user = this.userLoggedIn;
           if (this.editJobBool ===false){
             try {
                 

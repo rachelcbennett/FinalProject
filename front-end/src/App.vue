@@ -12,7 +12,7 @@
     <br>
     <br>
     <br>
-    <footer> <a href = "https://github.com/rachelcbennett/CP-4"> Github Repo </a></footer>
+    <footer> <a href = "https://github.com/rachelcbennett/FinalProject"> Github Repo </a>I spent about 8 hours on this project. </footer>
   </div>
 </template>
 

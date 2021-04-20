@@ -1,61 +1,6 @@
 <template>
   <div class="admin">
     <!-- This is just to see if it's pulling correctly -->
-    <Dashboard v-if="userLoggedIn"/>
-    
-    <Login v-else />
-  </div>
-</template>
-
-
-<script>
-// @ is an alias to /src
-import axios from 'axios';
-import Login from '@/components/Login.vue';
-import Dashboard from '@/components/Dashboard.vue';
-export default {
-  name: 'Admin',
-  components: {
-      Login,
-      Dashboard
-    
-  },
-  data(){
-      return {
-          user: '',
-          users: [],
-          jobs:[],
-          userName:'',
-          description:'',
-          startdate:'',
-          title:'',
-          location:'',
-          editJobBool:false,
-          jobID:'',
-          avgSalary:null,
-          numEmployees:null,
-      }
-  },
-  async created() {
-    try {
-
-      let response = await axios.get('/api/user'); //SEE IF LOGGED IN
-      this.$root.$data.user = response.data.user;
-      this.user = response.data.user;
-      this.getJobs();
-    } catch (error) {
-      this.$root.$data.user = null;
-    }
-  },
-  computed : {
-      userLoggedIn() {
-          
-          return this.$root.$data.user;
-      },
-      
-  },<template>
-  <div class="admin">
-    
     <div v-if="userLoggedIn" class='add'>
         <div class="menu">
             <h2>Logged in as <em> {{userLoggedIn.name}}</em><a @click="logout">
@@ -97,21 +42,20 @@ export default {
             <br>
         </div>
     </div>
-
-    <Login v-else />
-  </div>
+</div>
 </template>
+
 
 
 <script>
 // @ is an alias to /src
 import axios from 'axios';
-import Login from '@/components/Login.vue';
+
 
 export default {
   name: 'Admin',
   components: {
-      Login
+      
     
   },
   data(){
@@ -153,148 +97,6 @@ export default {
       },
       async addJob(){
           this.user = this.userLoggedIn;
-          if (this.editJobBool ===false){
-            try {
-                
-                const formData = new FormData();
-                formData.append('photo', this.file,this.file.name)
-                let r1 = await axios.post('/api/photos', formData);
-                await axios.post(`/api/users/${this.user._id}/job`,{
-                    title:this.title,
-                    description: this.description,
-                    startdate: this.startdate,
-                    path: r1.data.path,
-                });
-                this.getJobs();
-            }catch(error){
-                console.log(error)
-            }
-        }
-        else{
-            try {
-                //EDIT RATHER THAN ADD
-                const formData = new FormData();
-                formData.append('photo', this.file,this.file.name)
-                let r1 = await axios.post('/api/photos', formData);
-                await axios.put(`/api/users/${this.user._id}/jobs/${this.jobID}`{
-                    title:this.title,
-                    description: this.description,
-                    startdate: this.startdate,
-                    path: r1.data.path,
-                });
-                this.getJobs();
-            }catch(error){
-                console.log(error)
-            }
-        }
-      },
-      async deleteJob(job){
-          try {
-              await axios.delete(`/api/users/${this.user._id}/jobs/${job._id}`)
-              this.getJobs();
-          }
-          catch(error){
-              console.log(error)
-          }
-      },
-
-      async getJobs(){
-        try {
-            const response = await axios.get(`/api/users/${this.user._id}/jobs`);
-            this.jobs = response.data;
-        } catch (error) {
-            console.log(error);
-        }
-      },
-      async addUser(){
-          
-          try{
-              await axios.post("/api/users", {
-                  name: this.userName,
-                  location: this.location,
-                  numEmployees:this.numEmployees,
-                  avgSalary:this.avgSalary,
-              });
-              await this.getUsers();
-          } catch (error){
-              console.log(error);
-          }
-      },
-      async getUsers(){
-          try {
-              const response = await axios.get('/api/users');
-              this.users = response.data;
-          }catch (error ){
-              console.log(error);
-          }
-      },
-      selectUser(user){
-          this.user = user;
-          this.getJobs();
-      },
-      fileChanged(event){
-         this.file = event.target.files[0]
-      },
-      async upload(){
-          try{
-            const formData = new FormData();
-            formData.append('photo', this.file,this.file.name)
-            let r1 = await axios.post('/api/photos', formData);
-            let r2 = await axios.post('/api/jobs', {
-                title: this.title,
-                description: this.description,
-                startdate: this.startdate,
-                path: r1.data.path
-            });
-            this.addItem=r2.data;
-          } catch(error){
-            console.log("Error in upload")
-          }
-      },
-
-      async logout() {
-        try {
-            await axios.delete("/api/users");
-            this.$root.$data.user = null;
-        } catch (error) {
-            this.$root.$data.user = null;
-        }
-      },
-      
-
-  }
-}
-</script>
-
-<style scoped>
-
-
-h1{
-    color:#00c2cb;
-}
-h2{
-    color:#00c2cb;
-}
-
-input{
-    font-size: larger;
-}
-.pure-button-primary {
-  background-color: darkgray;
-  font-size: small;
-}
-</style> 
-  methods: {
-      editJob(job)
-          this.jobID = job._id;
-          this.editJobBool= true;
-      },
-      async addJob(){
-<<<<<<< HEAD
-          this.user = this.userLoggedIn;
-=======
-          this.user = userLoggedIn();
->>>>>>> 083f3ac65815e6df80838146a55b28154fcabedc
           if (this.editJobBool ===false){
             try {
                 

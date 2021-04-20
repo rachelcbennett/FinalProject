@@ -68,6 +68,7 @@ export default {
           error: '',
           errorLogin: '',
           jobs: [],
+          user: null
       }
     },
     methods: {
@@ -106,11 +107,14 @@ export default {
                     password: this.passwordLogin,
                 });
                 this.$root.$data.user = response.data.user;
+                this.user = response.data.user;
                 this.getJobs();
                 this.$root.$data.jobs = this.jobs;
+                console.log(this.$root.$data.jobs);
             } catch (error) {
                 this.errorLogin = "Error: " + error.response.data.message;
                 this.$root.$data.user = null;
+                this.$root.$data.jobs = null;
             }
         },
         async getJobs(){
@@ -122,7 +126,6 @@ export default {
             }
       },
     }
-
 }
 
 </script>

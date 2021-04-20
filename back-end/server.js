@@ -20,7 +20,7 @@ mongoose.connect('mongodb://localhost:27017/finalDB', {
 
 const multer = require('multer')
 const upload = multer({
-  dest: '/var/www/finalproj.rachelcardon.com/images/',
+  dest: '../front-end/public/images/',
   limits: {
     fileSize: 10000000
   }

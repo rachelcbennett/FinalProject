@@ -53,7 +53,7 @@ import axios from 'axios';
 
 
 export default {
-  name: 'Admin',
+  name: 'Dashboard',
   components: {
       
     

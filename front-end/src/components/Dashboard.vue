@@ -1,23 +1,61 @@
 <template>
   <div class="admin">
     <!-- This is just to see if it's pulling correctly -->
-    <Dashboard v-if="userLoggedIn"/>
-    
-    <Login v-else />
-  </div>
+    <div v-if="userLoggedIn" class='add'>
+        <div class="menu">
+            <h2>Logged in as <em> {{userLoggedIn.name}}</em><a @click="logout">
+                <br> <br><button class="pure-button pure-button-primary" >Logout</button></a></h2>
+        </div>
+        <br>
+          <h2> List and Edit Jobs </h2>
+          <h3> Your current jobs:</h3>
+          <li v-for="job in jobs" :key="job.id">
+            {{job.title}} <button @click="deleteJob(job)"> Delete </button>
+            <button @click="editJob(job)"> Edit Job </button>
+            </li>
+           
+             <br>
+              <br>
+
+        <div v-if="editJobBool">
+            You are now using edit mode. Please enter the information you'd like to edit in the fields below then hit "Upload or Edit Job". 
+        </div>
+        <br>
+        
+        <div class='form'>
+            
+            <input v-model="title" placeholder="Job Title">
+            <br>
+            <br>
+            <input type = "text" v-model="startdate" placeholder="Start Date">
+            <br>
+            <br>
+            <textarea v-model="description" placeholder="Description"></textarea>
+            <br>
+            <br>
+           <h3> Add a Company Logo:</h3><br>
+            <input type="file" name="photo" @change="fileChanged">
+            <br>
+            <br>
+            <button @click="addJob">Upload or Edit Job</button>
+            <br>
+            <br>
+        </div>
+    </div>
+</div>
 </template>
+
 
 
 <script>
 // @ is an alias to /src
 import axios from 'axios';
-import Login from '@/components/Login.vue';
-import Dashboard from '@/components/Dashboard.vue';
+
+
 export default {
   name: 'Admin',
   components: {
-      Login,
-      Dashboard
+      
     
   },
   data(){

@@ -6,7 +6,7 @@ Vue.config.productionTip = false
 
 let data = {
     user: null,
-    jobs: [],
+    jobs: null,
   }
   
   new Vue({

@@ -317,7 +317,9 @@ app.get('/api/users/:userID/jobs', async (req, res) => {
             res.send(404);
             return;
         }
-        let jobs = await Job.find({user:user});
+        let jobs = await Job.find({user:user}).sort({
+            created:-1
+        }).populate('user');
         res.send(jobs);
     } catch (error) {
         console.log(error);
@@ -325,10 +327,12 @@ app.get('/api/users/:userID/jobs', async (req, res) => {
     }
 });
 
+
+
  //GET ALL Jobs
 app.get('/api/jobs', async (req, res) => {
     try {
-        let jobs = await Job.find();
+        let jobs = await Job.find().populate('user');
         if (!jobs) {
             res.send(404);
             return;
@@ -344,7 +348,7 @@ app.get('/api/jobs', async (req, res) => {
 app.get('/api/job/:jobID', async (req, res) => {
     
     try {
-        let job = await Job.findOne({_id: req.params.jobID});
+        let job = await Job.findOne({_id: req.params.jobID}).populate('user');
         if (!job) {
             res.send(404);
             return;

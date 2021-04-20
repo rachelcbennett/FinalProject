@@ -2,6 +2,10 @@
   <div class="admin">
     
     <div v-if="userLoggedIn" class='add'>
+        <div class="menu">
+            <h2>Logged in as <em> {{userLoggedIn.name}}</em><a @click="logout">
+                <br> <br><button class="pure-button pure-button-primary" >Logout</button></a></h2>
+        </div>
         <br>
           <h2> List and Edit Jobs </h2>
           <h3> Your current jobs:</h3>
@@ -191,7 +195,16 @@ export default {
           } catch(error){
             console.log("Error in upload")
           }
-      } 
+      },
+
+      async logout() {
+        try {
+            await axios.delete("/api/users");
+            this.$root.$data.user = null;
+        } catch (error) {
+            this.$root.$data.user = null;
+        }
+      },
       
 
   }
@@ -199,6 +212,8 @@ export default {
 </script>
 
 <style scoped>
+
+
 h1{
     color:#00c2cb;
 }
@@ -208,5 +223,9 @@ h2{
 
 input{
     font-size: larger;
+}
+.pure-button-primary {
+  background-color: darkgray;
+  font-size: small;
 }
 </style>

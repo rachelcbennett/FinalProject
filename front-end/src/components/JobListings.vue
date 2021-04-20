@@ -9,7 +9,10 @@
 
         <br>
         <h2>{{this.job.title}}</h2>
+        
         <div class='desc'>
+        <p> Company: {{this.companyName}} </p>
+        <p> Location: {{this.job.user.location}} </p>
          <p>Description: <em>{{this.job.description}}</em> </p> 
          <p> Start Date: {{this.job.startdate}}</p>
         </div>
@@ -25,6 +28,8 @@
             </div>
             <div class= "info">
                 <a href ="#"><h2 @click="viewJob(job)">{{job.title}}</h2> </a>
+                <a href ="#"><em @click="viewJob(job)">Company: {{job.user.name}}</em> </a>
+                
                 <a href ="#"><p @click="viewJob(job)"> View Job Listing </p></a>
             </div>
       </div>
@@ -49,6 +54,8 @@ export default {
           startdate:'',
           title:'',
           jobview: false,
+          companyName: '',
+          companyLocation:'',
       }
     },
     created() {
@@ -65,14 +72,13 @@ export default {
       },
       async viewJob(job){
           try {
-              console.log("HEy");
-              console.log(job._id);
               const response = await axios.get(`/api/job/${job._id}`);
               this.job = response.data;
               this.title = job.title;
               this.description = job.description;
               this.startdate = job.startdate;
               this.jobview=true;
+              this.companyName = job.user.name;
           } catch (error ){
               console.log(error);
           }

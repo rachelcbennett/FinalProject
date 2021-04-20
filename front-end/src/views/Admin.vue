@@ -1,6 +1,6 @@
 <template>
   <div class="admin">
-    
+    <!-- This is just to see if it's pulling correctly -->
     <div v-if="userLoggedIn" class='add'>
         <div class="menu">
             <h2>Logged in as <em> {{userLoggedIn.name}}</em><a @click="logout">

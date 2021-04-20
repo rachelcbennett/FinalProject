@@ -67,6 +67,7 @@ export default {
 
           error: '',
           errorLogin: '',
+          jobs: [],
       }
     },
     methods: {
@@ -93,6 +94,7 @@ export default {
 
         },
         async login() {
+
             this.error = '';
             this.errorLogin = '';
             if (!this.userNameLogin || !this.passwordLogin)
@@ -104,11 +106,21 @@ export default {
                     password: this.passwordLogin,
                 });
                 this.$root.$data.user = response.data.user;
+                this.getJobs();
+                this.$root.$data.jobs = this.jobs;
             } catch (error) {
                 this.errorLogin = "Error: " + error.response.data.message;
                 this.$root.$data.user = null;
             }
         },
+        async getJobs(){
+            try {
+                const response = await axios.get(`/api/users/${this.user._id}/jobs`);
+                this.jobs = response.data;
+            } catch (error) {
+                console.log(error);
+            }
+      },
     }
 
 }

@@ -97,7 +97,7 @@ export default {
           this.editJobBool= true;
       },
       async addJob(){
-          this.user = userLoggedIn();
+          this.user = this.userLoggedIn;
           if (this.editJobBool ===false){
             try {
                 
